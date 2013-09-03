@@ -1,0 +1,10 @@
+bin
+obj
+*.user
+*.suo
+TestResult.xml
+debug
+test_results
+src/_ReSharper.Shamz
+thirdparty/packages
+nugetworking
