@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <RootDir>$(MSBuildStartupDirectory)</RootDir>
+    <SrcDir>$(Rootdir)\src</SrcDir>
+  </PropertyGroup>
+  
+  <PropertyGroup>
+    <ProjectGuid>{DBBD21C6-898C-4F93-8FA9-B7D99FD383C0}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <FileAlignment>512</FileAlignment>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+  </PropertyGroup>
+  
+  <PropertyGroup Condition="'$(FrameworkVersion)' == 'v3.5'">
+    <TargetFrameworkVersionName>net-3.5</TargetFrameworkVersionName>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(FrameworkVersion)' == 'v4.0'">
+    <TargetFrameworkVersionName>net-4.0</TargetFrameworkVersionName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+  </PropertyGroup>
+  
+  <PropertyGroup Condition="'$(FrameworkVersion)' == 'v4.5'">
+    <TargetFrameworkVersionName>net-4.5</TargetFrameworkVersionName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <DebugDir>$(Rootdir)\debug\$(TargetFrameworkVersionName)</DebugDir>
+    <PackagesDir>$(Rootdir)\thirdparty\packages\$(TargetFrameworkVersionName)</PackagesDir>
+    <OutputPath>$(DebugDir)\$(AssemblyName)</OutputPath>
+    <BaseIntermediaryOutputPath>$(TargetFrameworkVersionName)\obj</BaseIntermediaryOutputPath>
+    <IntermediateOutputPath>$(BaseIntermediaryOutputPath)</IntermediateOutputPath>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Binaries Include="$(TargetFrameworkVersionName)"></Binaries>
+  </ItemGroup>
+</Project>

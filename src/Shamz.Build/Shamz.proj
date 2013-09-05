@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="BuildStage1;BuildStage2" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Frameworks Include="v4.5"/>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Stage1 Include="Shamz.Core\Shamz.Core.proj" />
+    <Stage2 Include="Shamz.Console\Shamz.Console.proj" /> 
+    <Stage2 Include="Shamz.UnitTests\Shamz.UnitTests.proj" />
+    <Stage2 Include="Shamz.IntegrationTests\Shamz.IntegrationTests.proj" />
+  </ItemGroup>
+  
+  <Target Name="BuildStage1" Outputs="%(Frameworks.Identity)">
+    <MSBuild BuildInParallel="true"
+             Projects="@(Stage1)"
+             Properties="FrameworkVersion=%(Frameworks.Identity)"
+             StopOnFirstFailure="false"/>
+  </Target>
+
+  <Target Name="BuildStage2" Outputs="%(Frameworks.Identity)">
+    <MSBuild BuildInParallel="true"
+             Projects="@(Stage2)"
+             Properties="FrameworkVersion=%(Frameworks.Identity)"
+             StopOnFirstFailure="false"/>
+  </Target>
+</Project>

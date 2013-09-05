@@ -38,6 +38,7 @@ function Clean() {
 }
 
 function CleanAll() {
+  Clean
   TryDelete($config.packages_dir)
 }
 
@@ -47,12 +48,28 @@ function SetEnv() {
 }
 
 function RunUnitTestsVS() {
-  Write-Host -ForegroundColor Cyan '----------VS Unit Tests (3.5)-----------'
+  Write-Host -ForegroundColor Cyan '----------VS Unit Tests (4.5)-----------'
   .\thirdparty\packages\common\nunit.runners\tools\nunit-console.exe .\src\Shamz.UnitTests\bin\debug\Shamz.UnitTests.dll /nologo /framework:net-4.0 | Write-Host
   CheckLastExitCode
   Write-Host -ForegroundColor Cyan '----------------------------------'
 }
 
+function RunUnitTests() {
+  Write-Host -ForegroundColor Cyan '-------Debug Unit Tests (4.5)-----------'
+  .\thirdparty\packages\common\nunit.runners\tools\nunit-console.exe .\debug\net-4.5\Shamz.UnitTests\Shamz.UnitTests.dll /nologo /framework:net-4.0 | Write-Host
+  CheckLastExitCode
+  Write-Host -ForegroundColor Cyan '----------------------------------'
+}
+
+function RunAllTests() {
+  RunUnitTests
+  RunUnitTestsVS
+}
+
+function BuildAll() {
+  C:\Windows\Microsoft.NET\Framework64\v4.0.30319\MSBuild.exe .\src\Shamz.Build\Shamz.proj /ds /maxcpucount:6 | Write-Host
+  CheckLastExitCode
+}
 
 function Minion {
   param([string[]] $commands)
@@ -71,6 +88,11 @@ function Minion {
         'bootstrap' { Bootstrap }
         'set.env' { SetEnv }
         'run.unit.tests.vs' { RunUnitTestsVS }
+        'run.unit.tests' { RunUnitTests }
+        'run.all.tests' { RunAllTests }        
+        'build.all' { BuildAll }
+        'clean' { Clean }
+        'clean.all' { CleanAll }
         default { Write-Host -ForegroundColor Red "command not known: $command" }
       }
     }
