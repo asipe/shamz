@@ -7,8 +7,8 @@
     <ProjectGuid>{19074A01-55EB-4CC9-B842-6E58B9D7FAC3}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Shamz.Client</RootNamespace>
-    <AssemblyName>Shamz.Client</AssemblyName>
+    <RootNamespace>Shamz.Console</RootNamespace>
+    <AssemblyName>Shamz.Console</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
