@@ -46,6 +46,14 @@ function SetEnv() {
   Write-Host -ForegroundColor Green 'Path information set'
 }
 
+function RunUnitTestsVS() {
+  Write-Host -ForegroundColor Cyan '----------VS Unit Tests (3.5)-----------'
+  .\thirdparty\packages\common\nunit.runners\tools\nunit-console.exe .\src\Shamz.UnitTests\bin\debug\Shamz.UnitTests.dll /nologo /framework:net-4.0 | Write-Host
+  CheckLastExitCode
+  Write-Host -ForegroundColor Cyan '----------------------------------'
+}
+
+
 function Minion {
   param([string[]] $commands)
 
@@ -62,6 +70,7 @@ function Minion {
         'help' { Help }
         'bootstrap' { Bootstrap }
         'set.env' { SetEnv }
+        'run.unit.tests.vs' { RunUnitTestsVS }
         default { Write-Host -ForegroundColor Red "command not known: $command" }
       }
     }
