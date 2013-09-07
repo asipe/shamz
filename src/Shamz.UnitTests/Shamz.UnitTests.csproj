@@ -52,7 +52,14 @@
     <Compile Include="..\Shamz.Properties\AssemblyInfo.cs">
       <Link>AssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="Core\ShamzExeTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Shamz.Core\Shamz.Core.csproj">
+      <Project>{766B3ACA-A12C-4A36-AD25-3CF3DC15B410}</Project>
+      <Name>Shamz.Core</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

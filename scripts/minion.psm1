@@ -82,6 +82,16 @@ function RunAllTests() {
   RunIntegrationTests
 }
 
+function RunAllUnitTests() {
+  RunUnitTestsVS
+  RunUnitTests
+}
+
+function RunAllIntegrationTests() {
+  RunIntegrationTestsVS
+  RunIntegrationTests
+}
+
 function BuildAll() {
   C:\Windows\Microsoft.NET\Framework64\v4.0.30319\MSBuild.exe .\src\Shamz.Build\Shamz.proj /ds /maxcpucount:6 | Write-Host
   CheckLastExitCode
@@ -105,8 +115,10 @@ function Minion {
         'set.env' { SetEnv }
         'run.unit.tests.vs' { RunUnitTestsVS }
         'run.unit.tests' { RunUnitTests }
-        'run.integration.tests.vs' { RunIntegraitonTestsVS}
+        'run.integration.tests.vs' { RunIntegraitonTestsVS }
         'run.integration.tests' { RunIntegrationTests }
+        'run.all.integration.tests' { RunAllIntegrationTests }
+        'run.all.unit.tests' { RunAllUnitTests }
         'run.all.tests' { RunAllTests }        
         'build.all' { BuildAll }
         'clean' { Clean }
