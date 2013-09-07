@@ -59,9 +59,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\Shamz.Core\Shamz.Core.csproj">
       <Project>{766b3aca-a12c-4a36-ad25-3cf3dc15b410}</Project>
       <Name>Shamz.Core</Name>
