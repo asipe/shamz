@@ -61,9 +61,25 @@ function RunUnitTests() {
   Write-Host -ForegroundColor Cyan '----------------------------------'
 }
 
+function RunIntegrationTestsVS() {
+  Write-Host -ForegroundColor Cyan '----------VS Integration Tests (4.5)-----------'
+  .\thirdparty\packages\common\nunit.runners\tools\nunit-console.exe .\src\Shamz.IntegrationTests\bin\debug\Shamz.IntegrationTests.dll /nologo /framework:net-4.0 | Write-Host
+  CheckLastExitCode
+  Write-Host -ForegroundColor Cyan '----------------------------------'
+}
+
+function RunIntegrationTests() {
+  Write-Host -ForegroundColor Cyan '-------Debug Integration Tests (4.5)-----------'
+  .\thirdparty\packages\common\nunit.runners\tools\nunit-console.exe .\debug\net-4.5\Shamz.IntegrationTests\Shamz.IntegrationTests.dll /nologo /framework:net-4.0 | Write-Host
+  CheckLastExitCode
+  Write-Host -ForegroundColor Cyan '----------------------------------'
+}
+
 function RunAllTests() {
-  RunUnitTests
   RunUnitTestsVS
+  RunIntegrationTestsVS
+  RunUnitTests
+  RunIntegrationTests
 }
 
 function BuildAll() {
@@ -89,6 +105,8 @@ function Minion {
         'set.env' { SetEnv }
         'run.unit.tests.vs' { RunUnitTestsVS }
         'run.unit.tests' { RunUnitTests }
+        'run.integration.tests.vs' { RunIntegraitonTestsVS}
+        'run.integration.tests' { RunIntegrationTests }
         'run.all.tests' { RunAllTests }        
         'build.all' { BuildAll }
         'clean' { Clean }
