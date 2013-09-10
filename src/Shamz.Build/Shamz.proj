@@ -6,7 +6,6 @@
 
   <ItemGroup>
     <Stage1 Include="Shamz.Core\Shamz.Core.proj" />
-    <Stage2 Include="Shamz.Console\Shamz.Console.proj" /> 
     <Stage2 Include="Shamz.UnitTests\Shamz.UnitTests.proj" />
     <Stage2 Include="Shamz.IntegrationTests\Shamz.IntegrationTests.proj" />
   </ItemGroup>
