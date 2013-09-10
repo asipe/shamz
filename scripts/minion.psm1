@@ -49,28 +49,28 @@ function SetEnv() {
 
 function RunUnitTestsVS() {
   Write-Host -ForegroundColor Cyan '----------VS Unit Tests (4.5)-----------'
-  .\thirdparty\packages\common\nunit.runners\tools\nunit-console.exe .\src\Shamz.UnitTests\bin\debug\Shamz.UnitTests.dll /nologo /framework:net-4.0 | Write-Host
+  .\thirdparty\packages\common\nunit.runners\tools\nunit-console.exe .\src\Shamz.UnitTests\bin\debug\Shamz.UnitTests.dll /nologo /framework:net-4.5 | Write-Host
   CheckLastExitCode
   Write-Host -ForegroundColor Cyan '----------------------------------'
 }
 
 function RunUnitTests() {
   Write-Host -ForegroundColor Cyan '-------Debug Unit Tests (4.5)-----------'
-  .\thirdparty\packages\common\nunit.runners\tools\nunit-console.exe .\debug\net-4.5\Shamz.UnitTests\Shamz.UnitTests.dll /nologo /framework:net-4.0 | Write-Host
+  .\thirdparty\packages\common\nunit.runners\tools\nunit-console.exe .\debug\net-4.5\Shamz.UnitTests\Shamz.UnitTests.dll /nologo /framework:net-4.5 | Write-Host
   CheckLastExitCode
   Write-Host -ForegroundColor Cyan '----------------------------------'
 }
 
 function RunIntegrationTestsVS() {
   Write-Host -ForegroundColor Cyan '----------VS Integration Tests (4.5)-----------'
-  .\thirdparty\packages\common\nunit.runners\tools\nunit-console.exe .\src\Shamz.IntegrationTests\bin\debug\Shamz.IntegrationTests.dll /nologo /framework:net-4.0 | Write-Host
+  .\thirdparty\packages\common\nunit.runners\tools\nunit-console.exe .\src\Shamz.IntegrationTests\bin\debug\Shamz.IntegrationTests.dll /nologo /framework:net-4.5 | Write-Host
   CheckLastExitCode
   Write-Host -ForegroundColor Cyan '----------------------------------'
 }
 
 function RunIntegrationTests() {
   Write-Host -ForegroundColor Cyan '-------Debug Integration Tests (4.5)-----------'
-  .\thirdparty\packages\common\nunit.runners\tools\nunit-console.exe .\debug\net-4.5\Shamz.IntegrationTests\Shamz.IntegrationTests.dll /nologo /framework:net-4.0 | Write-Host
+  .\thirdparty\packages\common\nunit.runners\tools\nunit-console.exe .\debug\net-4.5\Shamz.IntegrationTests\Shamz.IntegrationTests.dll /nologo /framework:net-4.5 | Write-Host
   CheckLastExitCode
   Write-Host -ForegroundColor Cyan '----------------------------------'
 }
