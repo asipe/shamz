@@ -1,4 +1,5 @@
 ﻿using System.CodeDom.Compiler;
+using System.Text.RegularExpressions;
 using NUnit.Framework;
 using Shamz.Core;
 using SupaCharge.Testing;
@@ -53,6 +54,27 @@ namespace Shamz.UnitTests.Core {
       Check(instance, 100, "a1", "b1", "c1");
     }
 
+    [Test]
+    public void TestWithSingleInvocationThatMatchesArgsWithRegexReturnsInvocationsCode() {
+      var source = mBuilder.Build(new Invocation().WhenCommandLine("a[0-9]", "b", "c").ThenReturn(100));
+      var results = Compile(source);
+      var instance = CreateInstance(results);
+      Check(instance, 100, "a1", "b", "c");
+    }
+    
+    [Test]
+    public void TestWithMultipleInvocationsThatMatchesArgsWithRegexReturnsInvocationsCode() {
+      var source = mBuilder.Build(new Invocation().WhenCommandLine("^a[0-9]$", "b", "c").ThenReturn(100),
+                                  new Invocation().WhenCommandLine("a[0-9][0-9]", "^b$", "c").ThenReturn(200),
+                                  new Invocation().WhenCommandLine(".+", "b+", "c").ThenReturn(300));
+      var results = Compile(source);
+      var instance = CreateInstance(results);
+      Check(instance, 100, "a1", "b", "c");
+      Check(instance, 100, "a9", "b", "c");
+      Check(instance, 200, "a10", "b", "c");
+      Check(instance, 300, "a10", "bbbbbbb", "c");
+    }
+
     [SetUp]
     public void DoSetup() {
       mBuilder = new StubSourceBuilder();
@@ -74,6 +96,7 @@ namespace Shamz.UnitTests.Core {
                                              GenerateInMemory = true,
                                              TreatWarningsAsErrors = true
                                            };
+        parms.ReferencedAssemblies.Add("System.dll");
         parms.ReferencedAssemblies.Add("System.Core.dll");
         var results = provider.CompileAssemblyFromSource(parms, source);
         Assert.That(results.Errors, Is.Empty);

@@ -20,6 +20,7 @@ namespace Shamz.Core {
 
     private const string _ClassTemplate = @"
 using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace ShamzStub {{
   public class Stub {{
@@ -28,8 +29,13 @@ namespace ShamzStub {{
       return 0;
     }}
 
-    private static bool IsMatch(string[] args, string[] candidate) {{
-      return (args.SequenceEqual(candidate));
+    private static bool IsMatch(string[] args, string[] candidates) {{
+      if (args.Length != candidates.Length)
+        return false;
+      
+      return args
+        .Select((a,x) => new {{Arg = a, Candidate = candidates[x]}})
+        .All(i => Regex.IsMatch(i.Arg, i.Candidate));
     }}
   }}
 }}

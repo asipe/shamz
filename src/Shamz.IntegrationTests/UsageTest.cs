@@ -26,6 +26,24 @@ namespace Shamz.IntegrationTests {
       Assert.That(File.Exists(mWorkingExePath), Is.False);
     }
 
+    [Test]
+    public void TestRegexUsage() {
+      var shamz = ShamzFactory.CreateShamzExe(mWorkingExePath);
+      shamz
+        .Setup(invocation => invocation
+                               .WhenCommandLine("^a[0-9]$", "b[0-9]", "c1")
+                               .ThenReturn(1000))
+       .Setup(invocation => invocation
+                               .WhenCommandLine(".+", ".+", ".+")
+                               .ThenReturn(2000))
+        .Initialize();
+      ExecuteProcess("a1 b1 c1", 1000);
+      ExecuteProcess("a2 b2 c2", 2000);
+      ExecuteProcess("a2", 0);
+      shamz.CleanUp();
+      Assert.That(File.Exists(mWorkingExePath), Is.False);
+    }
+
     [SetUp]
     public void DoSetup() {
       mWorkingDir = CreateTempDir();

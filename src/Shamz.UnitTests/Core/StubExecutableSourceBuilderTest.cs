@@ -76,6 +76,7 @@ namespace Shamz.UnitTests.Core {
                                              TreatWarningsAsErrors = true,
                                              OutputAssembly = mExePath
                                            };
+        parms.ReferencedAssemblies.Add("System.dll");
         parms.ReferencedAssemblies.Add("System.Core.dll");
         var results = provider.CompileAssemblyFromSource(parms, sources);
         Assert.That(results.Errors, Is.Empty);

@@ -17,6 +17,7 @@ namespace Shamz.Core {
                                              CompilerOptions = "/optimize",
                                              OutputAssembly = outputPath
                                            };
+        parms.ReferencedAssemblies.Add("System.dll");
         parms.ReferencedAssemblies.Add("System.Core.dll");
         var results = provider.CompileAssemblyFromSource(parms, sources);
 
