@@ -44,7 +44,6 @@ namespace ShamzStub {{
 if (IsMatch(args, {0}))
   return {1};
 ";
-    
     private const string _ArrayTemplate = "new [] {{ {0} }}";
   }
 }

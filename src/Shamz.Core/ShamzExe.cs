@@ -26,8 +26,8 @@ namespace Shamz.Core {
       mFile.Delete(mExePath);
     }
 
-    private readonly string mExePath;
     private readonly IStubExecutableBuilder mBuilder;
+    private readonly string mExePath;
     private readonly IFile mFile;
     private readonly List<Invocation> mInvocations = new List<Invocation>();
   }

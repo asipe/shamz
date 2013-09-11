@@ -1,5 +1,4 @@
 ﻿using System.CodeDom.Compiler;
-using System.Text.RegularExpressions;
 using NUnit.Framework;
 using Shamz.Core;
 using SupaCharge.Testing;
@@ -61,7 +60,7 @@ namespace Shamz.UnitTests.Core {
       var instance = CreateInstance(results);
       Check(instance, 100, "a1", "b", "c");
     }
-    
+
     [Test]
     public void TestWithMultipleInvocationsThatMatchesArgsWithRegexReturnsInvocationsCode() {
       var source = mBuilder.Build(new Invocation().WhenCommandLine("^a[0-9]$", "b", "c").ThenReturn(100),

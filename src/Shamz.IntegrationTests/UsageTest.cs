@@ -33,7 +33,7 @@ namespace Shamz.IntegrationTests {
         .Setup(invocation => invocation
                                .WhenCommandLine("^a[0-9]$", "b[0-9]", "c1")
                                .ThenReturn(1000))
-       .Setup(invocation => invocation
+        .Setup(invocation => invocation
                                .WhenCommandLine(".+", ".+", ".+")
                                .ThenReturn(2000))
         .Initialize();
