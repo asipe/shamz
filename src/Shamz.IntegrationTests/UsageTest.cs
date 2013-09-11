@@ -1,7 +1,7 @@
-﻿using System.IO;
+﻿using System.Diagnostics;
+using System.IO;
 using NUnit.Framework;
 using Shamz.Core;
-using SupaCharge.Core.IOAbstractions;
 using SupaCharge.Testing;
 
 namespace Shamz.IntegrationTests {
@@ -9,10 +9,19 @@ namespace Shamz.IntegrationTests {
   public class UsageTest : BaseTestCase {
     [Test]
     public void TestBasicUsage() {
-      var shamz = new ShamzExe(new DotNetFile(), mWorkingExePath);
-      Assert.That(File.Exists(mWorkingExePath), Is.False);
-      shamz.Initialize();
-      Assert.That(File.Exists(mWorkingExePath), Is.True);
+      var shamz = ShamzFactory.CreateShamzExe(mWorkingExePath);
+      shamz
+        .Setup(invocation => invocation
+                               .WhenCommandLine("a1", "b1", "c1")
+                               .ThenReturn(0))
+        .Setup(invocation => invocation
+                               .WhenCommandLine("a2", "b2", "c2")
+                               .ThenReturn(1))
+        .Initialize();
+      ExecuteProcess("a1 b1 c1", 0);
+      ExecuteProcess("a2 b2 c2", 1);
+      ExecuteProcess("", 0);
+      ExecuteProcess("a1b1c1", 0);
       shamz.CleanUp();
       Assert.That(File.Exists(mWorkingExePath), Is.False);
     }
@@ -21,6 +30,21 @@ namespace Shamz.IntegrationTests {
     public void DoSetup() {
       mWorkingDir = CreateTempDir();
       mWorkingExePath = Path.Combine(mWorkingDir, "sample.exe");
+    }
+
+    private void ExecuteProcess(string arguments, int expectedExitCode) {
+      using (var process = new Process {
+                                         StartInfo = new ProcessStartInfo {
+                                                                            WorkingDirectory = mWorkingDir,
+                                                                            FileName = "sample.exe",
+                                                                            Arguments = arguments,
+                                                                            WindowStyle = ProcessWindowStyle.Hidden
+                                                                          }
+                                       }) {
+        process.Start();
+        process.WaitForExit();
+        Assert.That(process.ExitCode, Is.EqualTo(expectedExitCode));
+      }
     }
 
     private string mWorkingDir;

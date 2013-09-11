@@ -52,7 +52,11 @@
     <Compile Include="..\Shamz.Properties\AssemblyInfo.cs">
       <Link>AssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="Core\InvocationTest.cs" />
     <Compile Include="Core\ShamzExeTest.cs" />
+    <Compile Include="Core\StubExecutableBuilderTest.cs" />
+    <Compile Include="Core\StubExecutableSourceBuilderTest.cs" />
+    <Compile Include="Core\StubSourceBuilderTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

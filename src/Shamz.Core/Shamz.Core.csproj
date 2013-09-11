@@ -40,6 +40,13 @@
     <Compile Include="..\Shamz.Properties\AssemblyInfo.cs">
       <Link>AssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="IShamzExe.cs" />
+    <Compile Include="IStubExecutableBuilder.cs" />
+    <Compile Include="ShamzFactory.cs" />
+    <Compile Include="StubExecutableBuilder.cs" />
+    <Compile Include="StubExecutableSourceBuilder.cs" />
+    <Compile Include="StubSourceBuilder.cs" />
+    <Compile Include="Invocation.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ShamzExe.cs" />
   </ItemGroup>
