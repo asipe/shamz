@@ -6,7 +6,7 @@ namespace Shamz.Core {
     public string Build(params Invocation[] invocations) {
       var buf = new StringBuilder();
       foreach (var invocation in invocations)
-        buf.AppendFormat(_InvocationTemplate, FormatCommandLine(invocation), invocation.ExitCode);
+        buf.AppendFormat(_IsMatchCallTemplate, FormatCommandLine(invocation), invocation.ExitCode);
       return string.Format(_ClassTemplate, buf);
     }
 
@@ -27,13 +27,18 @@ namespace ShamzStub {{
       {0}
       return 0;
     }}
+
+    private static bool IsMatch(string[] args, string[] candidate) {{
+      return (args.SequenceEqual(candidate));
+    }}
   }}
 }}
 ";
-    private const string _InvocationTemplate = @"
-if (args.SequenceEqual({0})) 
+    private const string _IsMatchCallTemplate = @"
+if (IsMatch(args, {0}))
   return {1};
 ";
+    
     private const string _ArrayTemplate = "new [] {{ {0} }}";
   }
 }
