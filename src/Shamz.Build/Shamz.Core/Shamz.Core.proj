@@ -16,11 +16,13 @@
     <Reference Include="System.Core" />
   </ItemGroup>
 
-  <ItemGroup Condition="'$(FrameworkVersion)' != 'v3.5'">
-    <Reference Include="Microsoft.CSharp" />
+  <ItemGroup Condition="'$(FrameworkVersion)' == 'v4.0'">
+    <Reference Include="Microsoft.CSharp" />  
+    <Reference Include="$(PackagesDir)\supacharge.core\lib\net40\supacharge.core.dll" />
   </ItemGroup>
   
   <ItemGroup Condition="'$(FrameworkVersion)' == 'v4.5'">
+    <Reference Include="Microsoft.CSharp" />  
     <Reference Include="$(PackagesDir)\supacharge.core\lib\net45\supacharge.core.dll" />
   </ItemGroup>  
 

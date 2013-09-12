@@ -31,6 +31,8 @@ function Bootstrap() {
   CheckLastExitCode
   .\thirdparty\nuget\nuget.exe install .\src\Shamz.Nuget.Packages\net-4.5\packages.config -OutputDirectory .\thirdparty\packages\net-4.5 -ExcludeVersion | Write-Host
   CheckLastExitCode
+  .\thirdparty\nuget\nuget.exe install .\src\Shamz.Nuget.Packages\net-4.0\packages.config -OutputDirectory .\thirdparty\packages\net-4.0 -ExcludeVersion | Write-Host
+  CheckLastExitCode
 }
 
 function Clean() {
@@ -55,6 +57,11 @@ function RunUnitTestsVS() {
 }
 
 function RunUnitTests() {
+  Write-Host -ForegroundColor Cyan '-------Debug Unit Tests (4.0)-----------'
+  .\thirdparty\packages\common\nunit.runners\tools\nunit-console.exe .\debug\net-4.0\Shamz.UnitTests\Shamz.UnitTests.dll /nologo /framework:net-4.0 | Write-Host
+  CheckLastExitCode
+  Write-Host -ForegroundColor Cyan '----------------------------------'
+  
   Write-Host -ForegroundColor Cyan '-------Debug Unit Tests (4.5)-----------'
   .\thirdparty\packages\common\nunit.runners\tools\nunit-console.exe .\debug\net-4.5\Shamz.UnitTests\Shamz.UnitTests.dll /nologo /framework:net-4.5 | Write-Host
   CheckLastExitCode
@@ -69,6 +76,11 @@ function RunIntegrationTestsVS() {
 }
 
 function RunIntegrationTests() {
+  Write-Host -ForegroundColor Cyan '-------Debug Integration Tests (4.0)-----------'
+  .\thirdparty\packages\common\nunit.runners\tools\nunit-console.exe .\debug\net-4.0\Shamz.IntegrationTests\Shamz.IntegrationTests.dll /nologo /framework:net-4.0 | Write-Host
+  CheckLastExitCode
+  Write-Host -ForegroundColor Cyan '----------------------------------'
+  
   Write-Host -ForegroundColor Cyan '-------Debug Integration Tests (4.5)-----------'
   .\thirdparty\packages\common\nunit.runners\tools\nunit-console.exe .\debug\net-4.5\Shamz.IntegrationTests\Shamz.IntegrationTests.dll /nologo /framework:net-4.5 | Write-Host
   CheckLastExitCode
