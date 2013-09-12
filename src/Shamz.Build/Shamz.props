@@ -20,7 +20,7 @@
   <PropertyGroup Condition="'$(FrameworkVersion)' == 'v3.5'">
     <TargetFrameworkVersionName>net-3.5</TargetFrameworkVersionName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DefineConstants>DEBUG;TRACE;NET35</DefineConstants>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(FrameworkVersion)' == 'v4.0'">

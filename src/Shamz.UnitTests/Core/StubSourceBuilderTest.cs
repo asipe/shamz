@@ -1,4 +1,4 @@
-﻿using System.CodeDom.Compiler;
+﻿using System.Reflection;
 using NUnit.Framework;
 using Shamz.Core;
 using SupaCharge.Testing;
@@ -9,24 +9,21 @@ namespace Shamz.UnitTests.Core {
     [Test]
     public void TestBuildWithNoInvocationsGivesDefault() {
       var source = mBuilder.Build();
-      var results = Compile(source);
-      var instance = CreateInstance(results);
+      var instance = CreateInstance(Compile(source));
       Check(instance, 0, CM<string>());
     }
 
     [Test]
     public void TestWithSingleInvocationThatMatchesArgsReturnsInvocationsCode() {
       var source = mBuilder.Build(new Invocation().WhenCommandLine("a", "b", "c").ThenReturn(100));
-      var results = Compile(source);
-      var instance = CreateInstance(results);
+      var instance = CreateInstance(Compile(source));
       Check(instance, 100, "a", "b", "c");
     }
 
     [Test]
     public void TestWithSingleInvocationThatDoesNotMatchArgsReturnsDefault() {
       var source = mBuilder.Build(new Invocation().WhenCommandLine("a", "b", "c").ThenReturn(100));
-      var results = Compile(source);
-      var instance = CreateInstance(results);
+      var instance = CreateInstance(Compile(source));
       Check(instance, 0, "a", "b", "e");
     }
 
@@ -35,8 +32,7 @@ namespace Shamz.UnitTests.Core {
       var source = mBuilder.Build(new Invocation().WhenCommandLine("a1", "b1", "c1").ThenReturn(100),
                                   new Invocation().WhenCommandLine("a2", "c2").ThenReturn(200),
                                   new Invocation().WhenCommandLine("a3").ThenReturn(300));
-      var results = Compile(source);
-      var instance = CreateInstance(results);
+      var instance = CreateInstance(Compile(source));
       Check(instance, 100, "a1", "b1", "c1");
       Check(instance, 200, "a2", "c2");
       Check(instance, 300, "a3");
@@ -48,16 +44,14 @@ namespace Shamz.UnitTests.Core {
     public void TestFirstInvocationWinsWhenThereAreDuplicateRegistrations() {
       var source = mBuilder.Build(new Invocation().WhenCommandLine("a1", "b1", "c1").ThenReturn(100),
                                   new Invocation().WhenCommandLine("a1", "b1", "c1").ThenReturn(200));
-      var results = Compile(source);
-      var instance = CreateInstance(results);
+      var instance = CreateInstance(Compile(source));
       Check(instance, 100, "a1", "b1", "c1");
     }
 
     [Test]
     public void TestWithSingleInvocationThatMatchesArgsWithRegexReturnsInvocationsCode() {
       var source = mBuilder.Build(new Invocation().WhenCommandLine("a[0-9]", "b", "c").ThenReturn(100));
-      var results = Compile(source);
-      var instance = CreateInstance(results);
+      var instance = CreateInstance(Compile(source));
       Check(instance, 100, "a1", "b", "c");
     }
 
@@ -66,8 +60,7 @@ namespace Shamz.UnitTests.Core {
       var source = mBuilder.Build(new Invocation().WhenCommandLine("^a[0-9]$", "b", "c").ThenReturn(100),
                                   new Invocation().WhenCommandLine("a[0-9][0-9]", "^b$", "c").ThenReturn(200),
                                   new Invocation().WhenCommandLine(".+", "b+", "c").ThenReturn(300));
-      var results = Compile(source);
-      var instance = CreateInstance(results);
+      var instance = CreateInstance(Compile(source));
       Check(instance, 100, "a1", "b", "c");
       Check(instance, 100, "a9", "b", "c");
       Check(instance, 200, "a10", "b", "c");
@@ -84,23 +77,12 @@ namespace Shamz.UnitTests.Core {
       Assert.That(method.Invoke(instance, new object[] {args}), Is.EqualTo(expected));
     }
 
-    private static object CreateInstance(CompilerResults results) {
-      return results.CompiledAssembly.CreateInstance("ShamzStub.Stub");
+    private static object CreateInstance(Assembly assembly) {
+      return assembly.CreateInstance("ShamzStub.Stub");
     }
 
-    private static CompilerResults Compile(string source) {
-      using (var provider = CodeDomProvider.CreateProvider("CSharp")) {
-        var parms = new CompilerParameters {
-                                             GenerateExecutable = false,
-                                             GenerateInMemory = true,
-                                             TreatWarningsAsErrors = true
-                                           };
-        parms.ReferencedAssemblies.Add("System.dll");
-        parms.ReferencedAssemblies.Add("System.Core.dll");
-        var results = provider.CompileAssemblyFromSource(parms, source);
-        Assert.That(results.Errors, Is.Empty);
-        return results;
-      }
+    private static Assembly Compile(string source) {
+      return new ShamzCompiler().CompileAssembly(source);
     }
 
     private StubSourceBuilder mBuilder;

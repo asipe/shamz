@@ -1,5 +1,4 @@
-﻿using System.CodeDom.Compiler;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.IO;
 using NUnit.Framework;
 using Shamz.Core;
@@ -69,18 +68,7 @@ namespace Shamz.UnitTests.Core {
     }
 
     private void Compile(string[] sources) {
-      using (var provider = CodeDomProvider.CreateProvider("CSharp")) {
-        var parms = new CompilerParameters {
-                                             GenerateExecutable = true,
-                                             GenerateInMemory = false,
-                                             TreatWarningsAsErrors = true,
-                                             OutputAssembly = mExePath
-                                           };
-        parms.ReferencedAssemblies.Add("System.dll");
-        parms.ReferencedAssemblies.Add("System.Core.dll");
-        var results = provider.CompileAssemblyFromSource(parms, sources);
-        Assert.That(results.Errors, Is.Empty);
-      }
+      new ShamzCompiler().CompileExecutable(mExePath, sources);
     }
 
     private StubExecutableSourceBuilder mBuilder;
