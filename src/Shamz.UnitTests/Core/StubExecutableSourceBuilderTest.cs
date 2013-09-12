@@ -68,7 +68,7 @@ namespace Shamz.UnitTests.Core {
     }
 
     private void Compile(string[] sources) {
-      new ShamzCompiler().CompileExecutable(mExePath, sources);
+      new ShamzSourceCompiler().CompileExecutable(mExePath, sources);
     }
 
     private StubExecutableSourceBuilder mBuilder;

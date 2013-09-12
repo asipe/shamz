@@ -6,15 +6,9 @@ using System.Reflection;
 using Microsoft.CSharp;
 
 namespace Shamz.Core {
-  public class ShamzCompiler {
+  public class ShamzSourceCompiler {
     public void CompileExecutable(string outputPath, params string[] sources) {
-      var config = new Dictionary<string, string>();
-
-#if (NET35) 
-      config.Add("CompilerVersion", "v3.5");
-#endif
-
-      using (var provider = new CSharpCodeProvider(config)) {
+      using (var provider = new CSharpCodeProvider(GetProviderConfiguration())) {
         var parms = new CompilerParameters {
                                              GenerateExecutable = true,
                                              GenerateInMemory = false,
@@ -23,21 +17,14 @@ namespace Shamz.Core {
                                              CompilerOptions = "/optimize",
                                              OutputAssembly = outputPath
                                            };
-        parms.ReferencedAssemblies.Add("System.dll");
-        parms.ReferencedAssemblies.Add("System.Core.dll");
+        AddCommonReferences(parms);
         var results = provider.CompileAssemblyFromSource(parms, sources);
         ValidateNoErrors(results);
       }
     }
 
     public Assembly CompileAssembly(params string[] sources) {
-      var config = new Dictionary<string, string>();
-
-#if (NET35) 
-      config.Add("CompilerVersion", "v3.5");
-#endif
-
-      using (var provider = new CSharpCodeProvider(config)) {
+      using (var provider = new CSharpCodeProvider(GetProviderConfiguration())) {
         var parms = new CompilerParameters {
                                              GenerateExecutable = false,
                                              GenerateInMemory = true,
@@ -45,12 +32,16 @@ namespace Shamz.Core {
                                              IncludeDebugInformation = false,
                                              CompilerOptions = "/optimize",
                                            };
-        parms.ReferencedAssemblies.Add("System.dll");
-        parms.ReferencedAssemblies.Add("System.Core.dll");
+        AddCommonReferences(parms);
         var results = provider.CompileAssemblyFromSource(parms, sources);
         ValidateNoErrors(results);
         return results.CompiledAssembly;
       }
+    }
+
+    private static void AddCommonReferences(CompilerParameters parms) {
+      parms.ReferencedAssemblies.Add("System.dll");
+      parms.ReferencedAssemblies.Add("System.Core.dll");
     }
 
     private static void ValidateNoErrors(CompilerResults results) {
@@ -59,9 +50,17 @@ namespace Shamz.Core {
     }
 
     private static string FormatErrors(CompilerResults results) {
-      var errors = new List<string> { Environment.NewLine };
+      var errors = new List<string> {Environment.NewLine};
       errors.AddRange(results.Errors.Cast<object>().Select(error => error.ToString()));
       return string.Join(Environment.NewLine, errors.ToArray());
+    }
+
+    private static Dictionary<string, string> GetProviderConfiguration() {
+      var config = new Dictionary<string, string>();
+#if (NET35) 
+      config.Add("CompilerVersion", "v3.5");
+#endif
+      return config;
     }
   }
 }

@@ -5,7 +5,7 @@
     }
 
     private static void CompileExecutable(string outputPath, string[] sources) {
-      new ShamzCompiler().CompileExecutable(outputPath, sources);
+      new ShamzSourceCompiler().CompileExecutable(outputPath, sources);
     }
 
     private static string[] BuildSources(Invocation[] invocations) {

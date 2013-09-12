@@ -82,7 +82,7 @@ namespace Shamz.UnitTests.Core {
     }
 
     private static Assembly Compile(string source) {
-      return new ShamzCompiler().CompileAssembly(source);
+      return new ShamzSourceCompiler().CompileAssembly(source);
     }
 
     private StubSourceBuilder mBuilder;

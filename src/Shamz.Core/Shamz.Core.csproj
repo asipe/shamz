@@ -42,7 +42,7 @@
     </Compile>
     <Compile Include="IShamzExe.cs" />
     <Compile Include="IStubExecutableBuilder.cs" />
-    <Compile Include="ShamzCompiler.cs" />
+    <Compile Include="ShamzSourceCompiler.cs" />
     <Compile Include="ShamzFactory.cs" />
     <Compile Include="StubExecutableBuilder.cs" />
     <Compile Include="StubExecutableSourceBuilder.cs" />
