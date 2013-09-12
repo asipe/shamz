@@ -9,6 +9,7 @@ function Configure() {
     src_dir = $src
     packages_dir = Join-Path $thirdparty 'packages'
     debug_dir = $debug
+    deploy_dir = Join-Path $root 'deploy'
   }
 }
 
@@ -22,7 +23,7 @@ function CheckLastExitCode() {
 
 function TryDelete($path) {
   if (Test-Path($path)) {
-    Remove-Item $path -Verbose -Recurse
+    Remove-Item $path -Verbose -Recurse -Force
   }
 }
 
@@ -121,6 +122,27 @@ function BuildAll() {
   CheckLastExitCode
 }
 
+function DeployVersion($version, $target) {
+  $dir = Join-Path $config.deploy_dir $version
+  New-Item $dir -ItemType directory -Verbose
+  $rawdir = Join-Path $dir 'Shamz.Core\raw'
+  New-Item $rawdir -ItemType directory -Verbose
+  $source = Join-Path $config.debug_dir "$version\Shamz.Core"
+  Copy-Item $source\*.* $rawdir -Verbose
+  $mergeddir = Join-Path $dir 'Shamz.Core\merged'
+  New-Item $mergeddir -ItemType directory -Verbose
+  .\thirdparty\packages\common\ilmerge\ilmerge.exe /t:library /out:.\deploy\$version\shamz.core\merged\Shamz.Core.dll /targetplatform:$target .\deploy\$version\shamz.core\raw\shamz.core.dll .\deploy\$version\shamz.core\raw\supacharge.core.dll | Write-Host
+  CheckLastExitCode  
+}
+
+function Deploy() {
+  TryDelete($config.deploy_dir)
+  New-Item $config.deploy_dir -ItemType directory -Verbose
+  DeployVersion 'net-3.5' 'v2'
+  DeployVersion 'net-4.0' 'v4'
+  DeployVersion 'net-4.5' 'v4'
+}
+
 function Minion {
   param([string[]] $commands)
 
@@ -147,6 +169,7 @@ function Minion {
         'build.all' { BuildAll }
         'clean' { Clean }
         'clean.all' { CleanAll }
+        'deploy' { Deploy }
         default { Write-Host -ForegroundColor Red "command not known: $command" }
       }
     }
