@@ -2,7 +2,7 @@
   public class Invocation {
     public string[] CommandLine{get;set;}
     public int ExitCode{get;set;}
-    public int ExecutionDelay { get; set; }
+    public int ExecutionDelay{get;set;}
 
     public Invocation WhenCommandLine(params string[] commandLine) {
       CommandLine = commandLine;
