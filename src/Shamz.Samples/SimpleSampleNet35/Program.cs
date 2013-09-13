@@ -5,14 +5,6 @@ using Shamz.Core;
 namespace SimpleSampleNet35 {
   internal class Program {
     private static void Main() {
-      try {
-        Execute();
-      } catch (Exception e) {
-        Console.WriteLine(e.Message);
-      }
-    }
-
-    private static void Execute() {
       var exe = ShamzFactory.CreateShamzExe("sample.exe");
 
       exe
