@@ -175,6 +175,38 @@ function Deploy() {
   DeployVersion 'net-4.5' 'v4'
 }
 
+function BuildNugetPackages() {
+  tryDelete('nugetworking')
+  
+  New-Item .\nugetworking\core\lib\net35 -ItemType directory -Verbose
+  New-Item .\nugetworking\core\lib\net40 -ItemType directory -Verbose
+  New-Item .\nugetworking\core\lib\net45 -ItemType directory -Verbose
+  
+  Copy-Item .\deploy\net-3.5\shamz.core\merged\shamz.core.dll .\nugetworking\core\lib\net35 -Verbose
+  Copy-Item .\deploy\net-4.0\shamz.core\merged\shamz.core.dll .\nugetworking\core\lib\net40 -Verbose
+  Copy-Item .\deploy\net-4.5\shamz.core\merged\shamz.core.dll .\nugetworking\core\lib\net45 -Verbose
+  Copy-Item .\src\shamz.nuget.specs\shamz.core.dll.nuspec .\nugetworking\core -Verbose
+  
+  thirdparty\nuget\nuget.exe pack .\nugetworking\core\shamz.core.dll.nuspec -OutputDirectory .\nugetworking\core | Write-Host
+  CheckLastExitCode
+}
+
+function PushNugetPackages() {
+  Write-Host -ForegroundColor Yellow '--------------------!!!!!!!------------------------'
+  Write-Host -ForegroundColor Yellow 'Push Nuget Packages'
+  Write-Host -ForegroundColor Yellow 'Are You Sure?  Enter YES to Continue'
+  $response = Read-Host
+
+  if ($response -eq 'YES') {
+    Write-Host -ForegroundColor Yellow 'Pushing'
+
+    thirdparty\nuget\nuget.exe push .\nugetworking\core\shamz.Core.1.0.0.1.nupkg | Write-Host
+    CheckLastExitCode
+  } else {
+    Write-Host -ForegroundColor Yellow 'Cancelled - Nothing Pushed'
+  }
+}
+
 function Minion {
   param([string[]] $commands)
 
@@ -205,6 +237,8 @@ function Minion {
         'build.merged' { BuildMerged }
         'run.merged.integration.tests' { RunMergedIntegrationTests }
         'full.cycle' { FullCycle }
+        'build.nuget.packages' { BuildNugetPackages }
+        'push.nuget.packages' { PushNugetPackages }
         default { Write-Host -ForegroundColor Red "command not known: $command" }
       }
     }
