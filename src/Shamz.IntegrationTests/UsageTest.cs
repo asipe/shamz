@@ -89,7 +89,7 @@ namespace Shamz.IntegrationTests {
       }
     }
 
-    private void Measure(int min, int max, Action work) {
+    private static void Measure(int min, int max, Action work) {
       var sw = Stopwatch.StartNew();
       work();
       Assert.That(sw.ElapsedMilliseconds, Is.GreaterThanOrEqualTo(min).And.LessThanOrEqualTo(max));
