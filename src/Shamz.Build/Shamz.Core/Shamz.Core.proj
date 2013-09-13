@@ -30,7 +30,7 @@
 
   <ItemGroup>
     <Compile Include="$(SrcDir)\Shamz.Core\**\*.cs"/>
-    <Compile Include="$(SrcDir)\Common.Properties\*.cs"/>
+    <Compile Include="$(SrcDir)\Shamz.Properties\*.cs"/>
   </ItemGroup>
 
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
