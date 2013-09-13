@@ -6,7 +6,7 @@ namespace Shamz.Core {
     public string Build(params Invocation[] invocations) {
       var buf = new StringBuilder();
       foreach (var invocation in invocations)
-        buf.AppendFormat(_IsMatchCallTemplate, FormatCommandLine(invocation), invocation.ExitCode);
+        buf.AppendFormat(_IsMatchCallTemplate, FormatCommandLine(invocation), invocation.ExecutionDelay, invocation.ExitCode);
       return string.Format(_ClassTemplate, buf);
     }
 
@@ -21,6 +21,7 @@ namespace Shamz.Core {
     private const string _ClassTemplate = @"
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Threading;
 
 namespace ShamzStub {{
   public class Stub {{
@@ -41,8 +42,10 @@ namespace ShamzStub {{
 }}
 ";
     private const string _IsMatchCallTemplate = @"
-if (IsMatch(args, {0}))
-  return {1};
+if (IsMatch(args, {0})) {{
+  Thread.Sleep({1});
+  return {2};
+}}
 ";
     private const string _ArrayTemplate = "new [] {{ {0} }}";
   }

@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using System.Diagnostics;
+using System.Reflection;
 using NUnit.Framework;
 using Shamz.Core;
 using SupaCharge.Testing;
@@ -10,21 +11,21 @@ namespace Shamz.UnitTests.Core {
     public void TestBuildWithNoInvocationsGivesDefault() {
       var source = mBuilder.Build();
       var instance = CreateInstance(Compile(source));
-      Check(instance, 0, CM<string>());
+      Check(instance, 0, 0, 500, CM<string>());
     }
 
     [Test]
     public void TestWithSingleInvocationThatMatchesArgsReturnsInvocationsCode() {
       var source = mBuilder.Build(new Invocation().WhenCommandLine("a", "b", "c").ThenReturn(100));
       var instance = CreateInstance(Compile(source));
-      Check(instance, 100, "a", "b", "c");
+      Check(instance, 100, 0, 500, "a", "b", "c");
     }
 
     [Test]
     public void TestWithSingleInvocationThatDoesNotMatchArgsReturnsDefault() {
       var source = mBuilder.Build(new Invocation().WhenCommandLine("a", "b", "c").ThenReturn(100));
       var instance = CreateInstance(Compile(source));
-      Check(instance, 0, "a", "b", "e");
+      Check(instance, 0, 0, 500, "a", "b", "e");
     }
 
     [Test]
@@ -33,11 +34,11 @@ namespace Shamz.UnitTests.Core {
                                   new Invocation().WhenCommandLine("a2", "c2").ThenReturn(200),
                                   new Invocation().WhenCommandLine("a3").ThenReturn(300));
       var instance = CreateInstance(Compile(source));
-      Check(instance, 100, "a1", "b1", "c1");
-      Check(instance, 200, "a2", "c2");
-      Check(instance, 300, "a3");
-      Check(instance, 100, "a1", "b1", "c1");
-      Check(instance, 0);
+      Check(instance, 100, 0, 500, "a1", "b1", "c1");
+      Check(instance, 200, 0, 500, "a2", "c2");
+      Check(instance, 300, 0, 500, "a3");
+      Check(instance, 100, 0, 500, "a1", "b1", "c1");
+      Check(instance, 0, 0, 500);
     }
 
     [Test]
@@ -45,14 +46,14 @@ namespace Shamz.UnitTests.Core {
       var source = mBuilder.Build(new Invocation().WhenCommandLine("a1", "b1", "c1").ThenReturn(100),
                                   new Invocation().WhenCommandLine("a1", "b1", "c1").ThenReturn(200));
       var instance = CreateInstance(Compile(source));
-      Check(instance, 100, "a1", "b1", "c1");
+      Check(instance, 100, 0, 500, "a1", "b1", "c1");
     }
 
     [Test]
     public void TestWithSingleInvocationThatMatchesArgsWithRegexReturnsInvocationsCode() {
       var source = mBuilder.Build(new Invocation().WhenCommandLine("a[0-9]", "b", "c").ThenReturn(100));
       var instance = CreateInstance(Compile(source));
-      Check(instance, 100, "a1", "b", "c");
+      Check(instance, 100, 0, 500, "a1", "b", "c");
     }
 
     [Test]
@@ -61,10 +62,17 @@ namespace Shamz.UnitTests.Core {
                                   new Invocation().WhenCommandLine("a[0-9][0-9]", "^b$", "c").ThenReturn(200),
                                   new Invocation().WhenCommandLine(".+", "b+", "c").ThenReturn(300));
       var instance = CreateInstance(Compile(source));
-      Check(instance, 100, "a1", "b", "c");
-      Check(instance, 100, "a9", "b", "c");
-      Check(instance, 200, "a10", "b", "c");
-      Check(instance, 300, "a10", "bbbbbbb", "c");
+      Check(instance, 100, 0, 500, "a1", "b", "c");
+      Check(instance, 100, 0, 500, "a9", "b", "c");
+      Check(instance, 200, 0, 500, "a10", "b", "c");
+      Check(instance, 300, 0, 500, "a10", "bbbbbbb", "c");
+    }
+
+    [Test]
+    public void TestWithSingleInvocationWithDelay() {
+      var source = mBuilder.Build(new Invocation().WhenCommandLine("a", "b", "c").Delay(1000).ThenReturn(100));
+      var instance = CreateInstance(Compile(source));
+      Check(instance, 100, 1000, 1500, "a", "b", "c");
     }
 
     [SetUp]
@@ -72,9 +80,15 @@ namespace Shamz.UnitTests.Core {
       mBuilder = new StubSourceBuilder();
     }
 
-    private static void Check(object instance, int expected, params string[] args) {
+    private static void Check(object instance,
+                              int expectedResult,
+                              int minExecutionTime,
+                              int maxExecutionTime,
+                              params string[] args) {
+      var sw = Stopwatch.StartNew();
       var method = instance.GetType().GetMethod("Execute");
-      Assert.That(method.Invoke(instance, new object[] {args}), Is.EqualTo(expected));
+      Assert.That(method.Invoke(instance, new object[] {args}), Is.EqualTo(expectedResult));
+      Assert.That(sw.ElapsedMilliseconds, Is.GreaterThanOrEqualTo(minExecutionTime).And.LessThanOrEqualTo(maxExecutionTime));
     }
 
     private static object CreateInstance(Assembly assembly) {

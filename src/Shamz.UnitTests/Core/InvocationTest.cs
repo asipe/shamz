@@ -9,6 +9,7 @@ namespace Shamz.UnitTests.Core {
     public void TestDefaults() {
       Assert.That(mInvocation.CommandLine, Is.Null);
       Assert.That(mInvocation.ExitCode, Is.EqualTo(0));
+      Assert.That(mInvocation.ExecutionDelay, Is.EqualTo(0));
     }
 
     [Test]
@@ -24,11 +25,19 @@ namespace Shamz.UnitTests.Core {
     }
 
     [Test]
+    public void TestSetDelay() {
+      mInvocation.Delay(1000);
+      Assert.That(mInvocation.ExecutionDelay, Is.EqualTo(1000));
+    }
+
+    [Test]
     public void TestSetAllProperties() {
       mInvocation
         .WhenCommandLine("abc", "def")
+        .Delay(100)
         .ThenReturn(44);
       Assert.That(mInvocation.CommandLine, Is.EqualTo(BA("abc", "def")));
+      Assert.That(mInvocation.ExecutionDelay, Is.EqualTo(100));
       Assert.That(mInvocation.ExitCode, Is.EqualTo(44));
     }
 
