@@ -41,6 +41,8 @@
     <OutputPath>$(DebugDir)\$(AssemblyName)</OutputPath>
     <BaseIntermediaryOutputPath>$(TargetFrameworkVersionName)\obj</BaseIntermediaryOutputPath>
     <IntermediateOutputPath>$(BaseIntermediaryOutputPath)</IntermediateOutputPath>
+    <DeployDir>$(Rootdir)\deploy</DeployDir>
+    <MergedDeployDir>$(DeployDir)\$(TargetFrameworkVersionName)\Shamz.Core\Merged</MergedDeployDir>
   </PropertyGroup>
 
   <ItemGroup>

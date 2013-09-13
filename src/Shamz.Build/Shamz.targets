@@ -10,6 +10,8 @@
     <Message Text="PackagesDir: $(PackagesDir)"/>
     <Message Text="BaseIntermediaryOutputPath: $(BaseIntermediaryOutputPath)"/>
     <Message Text="IntermediateOutputPath: $(IntermediateOutputPath)"/>
+    <Message Text="DeployDir: $(DeployDir)"/>    
+    <Message Text="MergedDeployDir: $(MergedDeployDir)"/>
   </Target>
 
   <Target Name="ValidateFrameworkVersion">

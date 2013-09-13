@@ -10,6 +10,7 @@
     <Stage1 Include="Shamz.Core\Shamz.Core.proj" />
     <Stage2 Include="Shamz.UnitTests\Shamz.UnitTests.proj" />
     <Stage2 Include="Shamz.IntegrationTests\Shamz.IntegrationTests.proj" />
+    <Stage3 Include="Shamz.Merged.IntegrationTests\Shamz.Merged.IntegrationTests.proj" />
   </ItemGroup>
   
   <Target Name="BuildStage1" Outputs="%(Frameworks.Identity)">
@@ -22,6 +23,13 @@
   <Target Name="BuildStage2" Outputs="%(Frameworks.Identity)">
     <MSBuild BuildInParallel="true"
              Projects="@(Stage2)"
+             Properties="FrameworkVersion=%(Frameworks.Identity)"
+             StopOnFirstFailure="false"/>
+  </Target>
+
+  <Target Name="BuildStage3" Outputs="%(Frameworks.Identity)">
+    <MSBuild BuildInParallel="true"
+             Projects="@(Stage3)"
              Properties="FrameworkVersion=%(Frameworks.Identity)"
              StopOnFirstFailure="false"/>
   </Target>

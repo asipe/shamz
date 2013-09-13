@@ -122,6 +122,38 @@ function BuildAll() {
   CheckLastExitCode
 }
 
+function BuildMerged() {
+  C:\Windows\Microsoft.NET\Framework64\v4.0.30319\MSBuild.exe .\src\Shamz.Build\Shamz.proj /ds /maxcpucount:6 /target:BuildStage3 | Write-Host
+  CheckLastExitCode
+}
+
+function RunMergedIntegrationTests() {
+  Write-Host -ForegroundColor Cyan '-------Debug Merged Integration Tests (3.5)-----------'
+  .\thirdparty\packages\common\nunit.runners\tools\nunit-console.exe .\debug\net-3.5\Shamz.Merged.IntegrationTests\Shamz.Merged.IntegrationTests.dll /nologo /framework:net-3.5 | Write-Host
+  CheckLastExitCode
+  Write-Host -ForegroundColor Cyan '----------------------------------'
+  
+  Write-Host -ForegroundColor Cyan '-------Debug Merged Integration Tests (4.0)-----------'
+  .\thirdparty\packages\common\nunit.runners\tools\nunit-console.exe .\debug\net-4.0\Shamz.Merged.IntegrationTests\Shamz.Merged.IntegrationTests.dll /nologo /framework:net-4.0 | Write-Host
+  CheckLastExitCode
+  Write-Host -ForegroundColor Cyan '----------------------------------'
+  
+  Write-Host -ForegroundColor Cyan '-------Debug Merged Integration Tests (4.5)-----------'
+  .\thirdparty\packages\common\nunit.runners\tools\nunit-console.exe .\debug\net-4.5\Shamz.Merged.IntegrationTests\Shamz.Merged.IntegrationTests.dll /nologo /framework:net-4.5 | Write-Host
+  CheckLastExitCode
+  Write-Host -ForegroundColor Cyan '----------------------------------'
+}
+
+function FullCycle() {
+  CleanAll
+  Bootstrap
+  BuildAll
+  RunAllTests
+  Deploy
+  BuildMerged
+  RunMergedIntegrationTests
+}
+
 function DeployVersion($version, $target) {
   $dir = Join-Path $config.deploy_dir $version
   New-Item $dir -ItemType directory -Verbose
@@ -170,6 +202,9 @@ function Minion {
         'clean' { Clean }
         'clean.all' { CleanAll }
         'deploy' { Deploy }
+        'build.merged' { BuildMerged }
+        'run.merged.integration.tests' { RunMergedIntegrationTests }
+        'full.cycle' { FullCycle }
         default { Write-Host -ForegroundColor Red "command not known: $command" }
       }
     }
