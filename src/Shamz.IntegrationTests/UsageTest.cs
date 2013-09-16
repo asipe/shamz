@@ -82,6 +82,7 @@ namespace Shamz.IntegrationTests {
                                                                             FileName = mWorkingExePath,
                                                                             Arguments = arguments,
                                                                             WindowStyle = ProcessWindowStyle.Hidden,
+                                                                            CreateNoWindow = true,
                                                                             RedirectStandardOutput = true,
                                                                             RedirectStandardError = true,
                                                                             UseShellExecute = false

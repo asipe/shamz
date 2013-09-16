@@ -7,6 +7,16 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shamz.IntegrationTests", "S
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shamz.UnitTests", "Shamz.UnitTests\Shamz.UnitTests.csproj", "{76EC4A99-A2FF-4C3E-B1AF-3B5A21FEEBC6}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Shamz.License", "Shamz.License", "{EDDD81AC-3E69-4B7A-87E2-5CE646CCB264}"
+	ProjectSection(SolutionItems) = preProject
+		..\LICENSE = ..\LICENSE
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Shamz.Properties", "Shamz.Properties", "{B4F728D1-4957-49E4-9C15-38C39E5B910C}"
+	ProjectSection(SolutionItems) = preProject
+		Shamz.Properties\AssemblyInfo.cs = Shamz.Properties\AssemblyInfo.cs
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
