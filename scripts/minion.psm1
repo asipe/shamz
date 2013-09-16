@@ -185,9 +185,9 @@ function BuildNugetPackages() {
   Copy-Item .\deploy\net-3.5\shamz.core\merged\shamz.core.dll .\nugetworking\core\lib\net35 -Verbose
   Copy-Item .\deploy\net-4.0\shamz.core\merged\shamz.core.dll .\nugetworking\core\lib\net40 -Verbose
   Copy-Item .\deploy\net-4.5\shamz.core\merged\shamz.core.dll .\nugetworking\core\lib\net45 -Verbose
-  Copy-Item .\src\shamz.nuget.specs\shamz.core.dll.nuspec .\nugetworking\core -Verbose
+  Copy-Item .\src\shamz.nuget.specs\shamz.dll.nuspec .\nugetworking\core -Verbose
   
-  thirdparty\nuget\nuget.exe pack .\nugetworking\core\shamz.core.dll.nuspec -OutputDirectory .\nugetworking\core | Write-Host
+  thirdparty\nuget\nuget.exe pack .\nugetworking\core\shamz.dll.nuspec -OutputDirectory .\nugetworking\core | Write-Host
   CheckLastExitCode
 }
 
@@ -200,7 +200,7 @@ function PushNugetPackages() {
   if ($response -eq 'YES') {
     Write-Host -ForegroundColor Yellow 'Pushing'
 
-    thirdparty\nuget\nuget.exe push .\nugetworking\core\shamz.Core.1.0.0.3.nupkg | Write-Host
+    thirdparty\nuget\nuget.exe push .\nugetworking\core\shamz.1.0.0.3.nupkg | Write-Host
     CheckLastExitCode
   } else {
     Write-Host -ForegroundColor Yellow 'Cancelled - Nothing Pushed'
