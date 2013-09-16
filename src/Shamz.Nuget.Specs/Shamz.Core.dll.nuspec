@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package >
   <metadata>
-    <id>Shamz.Core</id>
+    <id>Shamz</id>
     <version>1.0.0.2</version>
     <authors>asipe</authors>
     <owners>asipe</owners>
