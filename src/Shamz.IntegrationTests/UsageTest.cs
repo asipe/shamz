@@ -75,16 +75,22 @@ namespace Shamz.IntegrationTests {
     }
 
     private void ExecuteProcess(string arguments, int expectedExitCode) {
+      Assert.That(File.Exists(mWorkingExePath), Is.True);
       using (var process = new Process {
                                          StartInfo = new ProcessStartInfo {
                                                                             WorkingDirectory = mWorkingDir,
-                                                                            FileName = "sample.exe",
+                                                                            FileName = mWorkingExePath,
                                                                             Arguments = arguments,
-                                                                            WindowStyle = ProcessWindowStyle.Hidden
+                                                                            WindowStyle = ProcessWindowStyle.Hidden,
+                                                                            RedirectStandardOutput = true,
+                                                                            RedirectStandardError = true,
+                                                                            UseShellExecute = false
                                                                           }
                                        }) {
         process.Start();
         process.WaitForExit();
+        Assert.That(process.StandardError.ReadToEnd(), Is.Empty);
+        Assert.That(process.StandardOutput.ReadToEnd(), Is.Empty);
         Assert.That(process.ExitCode, Is.EqualTo(expectedExitCode));
       }
     }
