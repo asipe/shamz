@@ -163,7 +163,7 @@ function DeployVersion($version, $target) {
   Copy-Item $source\*.* $rawdir -Verbose
   $mergeddir = Join-Path $dir 'Shamz.Core\merged'
   New-Item $mergeddir -ItemType directory -Verbose
-  .\thirdparty\packages\common\ilmerge\ilmerge.exe /t:library /out:.\deploy\$version\shamz.core\merged\Shamz.Core.dll /targetplatform:$target .\deploy\$version\shamz.core\raw\shamz.core.dll .\deploy\$version\shamz.core\raw\supacharge.core.dll | Write-Host
+  .\thirdparty\packages\common\ilmerge\ilmerge.exe /internalize /t:library /out:.\deploy\$version\shamz.core\merged\Shamz.Core.dll /targetplatform:$target .\deploy\$version\shamz.core\raw\shamz.core.dll .\deploy\$version\shamz.core\raw\supacharge.core.dll | Write-Host
   CheckLastExitCode  
 }
 
