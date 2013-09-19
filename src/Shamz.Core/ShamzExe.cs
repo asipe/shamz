@@ -23,12 +23,17 @@ namespace Shamz.Core {
     }
 
     public ShamzExe Initialize() {
+      ValidateInvocations();
       mBuilder.Build(new StubSpec(mExePath, mExitCode, mInvocations.ToArray()));
       return this;
     }
 
     public void CleanUp() {
       mFile.Delete(mExePath);
+    }
+
+    private void ValidateInvocations() {
+      Array.ForEach(mInvocations.ToArray(), i => i.Validate());
     }
 
     private readonly IStubExecutableBuilder mBuilder;

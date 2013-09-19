@@ -1,4 +1,6 @@
-﻿namespace Shamz.Core {
+﻿using System;
+
+namespace Shamz.Core {
   public class Invocation {
     public string[] CommandLine{get;set;}
     public int ExitCode{get;set;}
@@ -17,6 +19,11 @@
     public Invocation Delay(int delay) {
       ExecutionDelay = delay;
       return this;
+    }
+
+    public void Validate() {
+      if (CommandLine == null)
+        throw new ArgumentException("Invalid CommandLine Argument");
     }
   }
 }

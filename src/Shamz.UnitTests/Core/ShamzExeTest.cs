@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Moq;
 using NUnit.Framework;
@@ -13,6 +14,13 @@ namespace Shamz.UnitTests.Core {
     public void TestInitializeWithNoSetups() {
       mBuilder.Setup(b => b.Build(It.Is<StubSpec>(spec => SpecMatches(spec, _ExePath, 0))));
       mShamz.Initialize();
+    }
+    
+    [Test]
+    public void TestInitializeWithInvalidInvocationThrows() {
+      mShamz.Setup(inv => mExpectedInvocations.Add(inv));
+      var ex = Assert.Throws(typeof(ArgumentException), () => mShamz.Initialize());
+      Assert.That(ex.Message, Is.EqualTo("Invalid CommandLine Argument"));
     }
 
     [TestCase(0)]
@@ -35,6 +43,7 @@ namespace Shamz.UnitTests.Core {
                  mExpectedInvocations.Add(inv);
                })
         .Initialize();
+      mBuilder.Verify(b => b.Build(It.Is<StubSpec>(spec => SpecMatches(spec, _ExePath, 0, mExpectedInvocations.ToArray()))));
     }
 
     [Test]

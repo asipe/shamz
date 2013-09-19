@@ -1,4 +1,5 @@
-﻿using NUnit.Framework;
+﻿using System;
+using NUnit.Framework;
 using Shamz.Core;
 using SupaCharge.Testing;
 
@@ -39,6 +40,12 @@ namespace Shamz.UnitTests.Core {
       Assert.That(mInvocation.CommandLine, Is.EqualTo(BA("abc", "def")));
       Assert.That(mInvocation.ExecutionDelay, Is.EqualTo(100));
       Assert.That(mInvocation.ExitCode, Is.EqualTo(44));
+    }
+
+    [Test]
+    public void TestValidateThrowsWhenNoCommandLineIsDefined() {
+      var ex = Assert.Throws(typeof(ArgumentException), () => mInvocation.Validate());
+      Assert.That(ex.Message, Is.EqualTo("Invalid CommandLine Argument"));
     }
 
     [SetUp]
