@@ -28,6 +28,27 @@ namespace Shamz.IntegrationTests {
     }
 
     [Test]
+    public void TestDefaultExitCodeUsage() {
+      var shamz = ShamzFactory.CreateShamzExe(mWorkingExePath);
+      shamz
+        .Setup(invocation => invocation
+                               .WhenCommandLine("a1", "b1", "c1")
+                               .ThenReturn(0))
+        .Setup(invocation => invocation
+                               .WhenCommandLine("a2", "b2", "c2")
+                               .ThenReturn(1))
+        .WithDefaultExitCode(100)
+        .Initialize();
+      Measure(0, 500, () => ExecuteProcess("a1 b1 c1", 0));
+      Measure(0, 500, () => ExecuteProcess("a2 b2 c2", 1));
+      Measure(0, 500, () => ExecuteProcess("", 100));
+      Measure(0, 500, () => ExecuteProcess("a1b1c1", 100));
+      Measure(0, 500, () => ExecuteProcess(null, 100));
+      shamz.CleanUp();
+      Assert.That(File.Exists(mWorkingExePath), Is.False);
+    }
+
+    [Test]
     public void TestRegexUsage() {
       var shamz = ShamzFactory.CreateShamzExe(mWorkingExePath);
       shamz

@@ -9,27 +9,29 @@ namespace Shamz.UnitTests.Core {
   public class StubExecutableSourceBuilderTest : BaseTestCase {
     [Test]
     public void TestBuildWithNoInvocationsGivesDefault() {
-      Compile(mBuilder.Build());
+      Compile(mBuilder.Build(new StubSpec("", 0)));
       Check(0);
     }
 
     [Test]
     public void TestWithSingleInvocationThatMatchesArgsReturnsInvocationsCode() {
-      Compile(mBuilder.Build(new Invocation().WhenCommandLine("a", "b", "c").ThenReturn(100)));
+      Compile(mBuilder.Build(new StubSpec("", 0, new Invocation().WhenCommandLine("a", "b", "c").ThenReturn(100))));
       Check(100, "a", "b", "c");
     }
 
     [Test]
     public void TestWithSingleInvocationThatDoesNotMatchArgsReturnsDefault() {
-      Compile(mBuilder.Build(new Invocation().WhenCommandLine("a", "b", "c").ThenReturn(100)));
+      Compile(mBuilder.Build(new StubSpec("", 0, new Invocation().WhenCommandLine("a", "b", "c").ThenReturn(100))));
       Check(0, "a", "b", "e");
     }
 
     [Test]
     public void TestWithMultipleInvocations() {
-      Compile(mBuilder.Build(new Invocation().WhenCommandLine("a1", "b1", "c1").ThenReturn(100),
-                             new Invocation().WhenCommandLine("a2", "c2").ThenReturn(200),
-                             new Invocation().WhenCommandLine("a3").ThenReturn(300)));
+      Compile(mBuilder.Build(new StubSpec("",
+                                          0,
+                                          new Invocation().WhenCommandLine("a1", "b1", "c1").ThenReturn(100),
+                                          new Invocation().WhenCommandLine("a2", "c2").ThenReturn(200),
+                                          new Invocation().WhenCommandLine("a3").ThenReturn(300))));
       Check(100, "a1", "b1", "c1");
       Check(200, "a2", "c2");
       Check(300, "a3");
@@ -39,8 +41,10 @@ namespace Shamz.UnitTests.Core {
 
     [Test]
     public void TestFirstInvocationWinsWhenThereAreDuplicateRegistrations() {
-      Compile(mBuilder.Build(new Invocation().WhenCommandLine("a1", "b1", "c1").ThenReturn(100),
-                             new Invocation().WhenCommandLine("a1", "b1", "c1").ThenReturn(200)));
+      Compile(mBuilder.Build(new StubSpec("",
+                                          0,
+                                          new Invocation().WhenCommandLine("a1", "b1", "c1").ThenReturn(100),
+                                          new Invocation().WhenCommandLine("a1", "b1", "c1").ThenReturn(200))));
       Check(100, "a1", "b1", "c1");
     }
 

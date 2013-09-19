@@ -1,9 +1,9 @@
 ﻿namespace Shamz.Core {
   public class StubExecutableSourceBuilder {
-    public string[] Build(params Invocation[] invocations) {
+    public string[] Build(StubSpec spec) {
       return new[] {
                      _ProgramTemplate,
-                     new StubSourceBuilder().Build(invocations)
+                     new StubSourceBuilder().Build(spec)
                    };
     }
 

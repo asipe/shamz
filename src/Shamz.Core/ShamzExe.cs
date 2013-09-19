@@ -17,8 +17,13 @@ namespace Shamz.Core {
       return this;
     }
 
+    public ShamzExe WithDefaultExitCode(int code) {
+      mExitCode = code;
+      return this;
+    }
+
     public ShamzExe Initialize() {
-      mBuilder.Build(mExePath, mInvocations.ToArray());
+      mBuilder.Build(new StubSpec(mExePath, mExitCode, mInvocations.ToArray()));
       return this;
     }
 
@@ -30,5 +35,6 @@ namespace Shamz.Core {
     private readonly string mExePath;
     private readonly IFile mFile;
     private readonly List<Invocation> mInvocations = new List<Invocation>();
+    private int mExitCode;
   }
 }

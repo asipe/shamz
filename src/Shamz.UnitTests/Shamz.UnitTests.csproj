@@ -58,6 +58,7 @@
     <Compile Include="Core\StubExecutableBuilderTest.cs" />
     <Compile Include="Core\StubExecutableSourceBuilderTest.cs" />
     <Compile Include="Core\StubSourceBuilderTest.cs" />
+    <Compile Include="Core\StubSpecTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -3,11 +3,15 @@ using System.Text;
 
 namespace Shamz.Core {
   public class StubSourceBuilder {
-    public string Build(params Invocation[] invocations) {
+    public string Build(StubSpec spec) {
+      return string.Format(_ClassTemplate, BuildLogic(spec), spec.DefaultExitCode);
+    }
+
+    private static string BuildLogic(StubSpec spec) {
       var buf = new StringBuilder();
-      foreach (var invocation in invocations)
+      foreach (var invocation in spec.Invocations)
         buf.AppendFormat(_IsMatchCallTemplate, FormatCommandLine(invocation), invocation.ExecutionDelay, invocation.ExitCode);
-      return string.Format(_ClassTemplate, buf);
+      return buf.ToString();
     }
 
     private static string FormatCommandLine(Invocation invocation) {
@@ -27,7 +31,7 @@ namespace ShamzStub {{
   public class Stub {{
     public int Execute(string[] args) {{
       {0}
-      return 0;
+      return {1};
     }}
 
     private static bool IsMatch(string[] args, string[] candidates) {{

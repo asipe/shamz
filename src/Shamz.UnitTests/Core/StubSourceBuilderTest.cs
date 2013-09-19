@@ -9,30 +9,32 @@ namespace Shamz.UnitTests.Core {
   public class StubSourceBuilderTest : BaseTestCase {
     [Test]
     public void TestBuildWithNoInvocationsGivesDefault() {
-      var source = mBuilder.Build();
+      var source = mBuilder.Build(new StubSpec("", 50));
       var instance = CreateInstance(Compile(source));
-      Check(instance, 0, 0, 500, CM<string>());
+      Check(instance, 50, 0, 500, CM<string>());
     }
 
     [Test]
     public void TestWithSingleInvocationThatMatchesArgsReturnsInvocationsCode() {
-      var source = mBuilder.Build(new Invocation().WhenCommandLine("a", "b", "c").ThenReturn(100));
+      var source = mBuilder.Build(new StubSpec("", 0, new Invocation().WhenCommandLine("a", "b", "c").ThenReturn(100)));
       var instance = CreateInstance(Compile(source));
       Check(instance, 100, 0, 500, "a", "b", "c");
     }
 
     [Test]
     public void TestWithSingleInvocationThatDoesNotMatchArgsReturnsDefault() {
-      var source = mBuilder.Build(new Invocation().WhenCommandLine("a", "b", "c").ThenReturn(100));
+      var source = mBuilder.Build(new StubSpec("", 0, new Invocation().WhenCommandLine("a", "b", "c").ThenReturn(100)));
       var instance = CreateInstance(Compile(source));
       Check(instance, 0, 0, 500, "a", "b", "e");
     }
 
     [Test]
     public void TestWithMultipleInvocations() {
-      var source = mBuilder.Build(new Invocation().WhenCommandLine("a1", "b1", "c1").ThenReturn(100),
-                                  new Invocation().WhenCommandLine("a2", "c2").ThenReturn(200),
-                                  new Invocation().WhenCommandLine("a3").ThenReturn(300));
+      var source = mBuilder.Build(new StubSpec("",
+                                               0,
+                                               new Invocation().WhenCommandLine("a1", "b1", "c1").ThenReturn(100),
+                                               new Invocation().WhenCommandLine("a2", "c2").ThenReturn(200),
+                                               new Invocation().WhenCommandLine("a3").ThenReturn(300)));
       var instance = CreateInstance(Compile(source));
       Check(instance, 100, 0, 500, "a1", "b1", "c1");
       Check(instance, 200, 0, 500, "a2", "c2");
@@ -43,24 +45,30 @@ namespace Shamz.UnitTests.Core {
 
     [Test]
     public void TestFirstInvocationWinsWhenThereAreDuplicateRegistrations() {
-      var source = mBuilder.Build(new Invocation().WhenCommandLine("a1", "b1", "c1").ThenReturn(100),
-                                  new Invocation().WhenCommandLine("a1", "b1", "c1").ThenReturn(200));
+      var source = mBuilder.Build(new StubSpec("",
+                                               0,
+                                               new Invocation().WhenCommandLine("a1", "b1", "c1").ThenReturn(100),
+                                               new Invocation().WhenCommandLine("a1", "b1", "c1").ThenReturn(200)));
       var instance = CreateInstance(Compile(source));
       Check(instance, 100, 0, 500, "a1", "b1", "c1");
     }
 
     [Test]
     public void TestWithSingleInvocationThatMatchesArgsWithRegexReturnsInvocationsCode() {
-      var source = mBuilder.Build(new Invocation().WhenCommandLine("a[0-9]", "b", "c").ThenReturn(100));
+      var source = mBuilder.Build(new StubSpec("",
+                                               0,
+                                               new Invocation().WhenCommandLine("a[0-9]", "b", "c").ThenReturn(100)));
       var instance = CreateInstance(Compile(source));
       Check(instance, 100, 0, 500, "a1", "b", "c");
     }
 
     [Test]
     public void TestWithMultipleInvocationsThatMatchesArgsWithRegexReturnsInvocationsCode() {
-      var source = mBuilder.Build(new Invocation().WhenCommandLine("^a[0-9]$", "b", "c").ThenReturn(100),
-                                  new Invocation().WhenCommandLine("a[0-9][0-9]", "^b$", "c").ThenReturn(200),
-                                  new Invocation().WhenCommandLine(".+", "b+", "c").ThenReturn(300));
+      var source = mBuilder.Build(new StubSpec("",
+                                               0,
+                                               new Invocation().WhenCommandLine("^a[0-9]$", "b", "c").ThenReturn(100),
+                                               new Invocation().WhenCommandLine("a[0-9][0-9]", "^b$", "c").ThenReturn(200),
+                                               new Invocation().WhenCommandLine(".+", "b+", "c").ThenReturn(300)));
       var instance = CreateInstance(Compile(source));
       Check(instance, 100, 0, 500, "a1", "b", "c");
       Check(instance, 100, 0, 500, "a9", "b", "c");
@@ -70,7 +78,7 @@ namespace Shamz.UnitTests.Core {
 
     [Test]
     public void TestWithSingleInvocationWithDelay() {
-      var source = mBuilder.Build(new Invocation().WhenCommandLine("a", "b", "c").Delay(1000).ThenReturn(100));
+      var source = mBuilder.Build(new StubSpec("", 0, new Invocation().WhenCommandLine("a", "b", "c").Delay(1000).ThenReturn(100)));
       var instance = CreateInstance(Compile(source));
       Check(instance, 100, 1000, 1500, "a", "b", "c");
     }

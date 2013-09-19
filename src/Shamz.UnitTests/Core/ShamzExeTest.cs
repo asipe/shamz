@@ -11,13 +11,22 @@ namespace Shamz.UnitTests.Core {
   public class ShamzExeTest : BaseTestCase {
     [Test]
     public void TestInitializeWithNoSetups() {
-      mBuilder.Setup(b => b.Build(_ExePath));
+      mBuilder.Setup(b => b.Build(It.Is<StubSpec>(spec => SpecMatches(spec, _ExePath, 0))));
       mShamz.Initialize();
+    }
+
+    [TestCase(0)]
+    [TestCase(100)]
+    public void TestInitializeWithCustomExitCodeOnly(int exitCode) {
+      mBuilder.Setup(b => b.Build(It.Is<StubSpec>(spec => SpecMatches(spec, _ExePath, exitCode))));
+      mShamz
+        .WithDefaultExitCode(exitCode)
+        .Initialize();
     }
 
     [Test]
     public void TestInitializeWithSingleSetup() {
-      mBuilder.Setup(b => b.Build(_ExePath, It.IsAny<Invocation[]>()));
+      mBuilder.Setup(b => b.Build(It.IsAny<StubSpec>()));
       mShamz
         .Setup(inv => {
                  inv
@@ -26,12 +35,11 @@ namespace Shamz.UnitTests.Core {
                  mExpectedInvocations.Add(inv);
                })
         .Initialize();
-      mBuilder.Verify(b => b.Build(_ExePath, It.Is<Invocation[]>(a => a.SequenceEqual(mExpectedInvocations))));
     }
 
     [Test]
     public void TestInitializeWithMultipleSetups() {
-      mBuilder.Setup(b => b.Build(_ExePath, It.IsAny<Invocation[]>()));
+      mBuilder.Setup(b => b.Build(It.IsAny<StubSpec>()));
       mShamz
         .Setup(inv => {
                  inv
@@ -52,7 +60,7 @@ namespace Shamz.UnitTests.Core {
                  mExpectedInvocations.Add(inv);
                })
         .Initialize();
-      mBuilder.Verify(b => b.Build(_ExePath, It.Is<Invocation[]>(a => a.SequenceEqual(mExpectedInvocations))));
+      mBuilder.Verify(b => b.Build(It.Is<StubSpec>(spec => SpecMatches(spec, _ExePath, 0, mExpectedInvocations.ToArray()))));
     }
 
     [Test]
@@ -67,6 +75,12 @@ namespace Shamz.UnitTests.Core {
       mFile = Mok<IFile>();
       mBuilder = Mok<IStubExecutableBuilder>();
       mShamz = new ShamzExe(mBuilder.Object, mFile.Object, _ExePath);
+    }
+
+    private static bool SpecMatches(StubSpec actual, string outputPath, int exitCode, params Invocation[] invocations) {
+      return Equals(actual.ExePath, outputPath) &&
+             Equals(actual.DefaultExitCode, exitCode) &&
+             actual.Invocations.SequenceEqual(invocations);
     }
 
     private readonly List<Invocation> mExpectedInvocations = new List<Invocation>();
