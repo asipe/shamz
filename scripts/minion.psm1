@@ -225,7 +225,7 @@ function Minion {
         'set.env' { SetEnv }
         'run.unit.tests.vs' { RunUnitTestsVS }
         'run.unit.tests' { RunUnitTests }
-        'run.integration.tests.vs' { RunIntegraitonTestsVS }
+        'run.integration.tests.vs' { RunIntegrationTestsVS }
         'run.integration.tests' { RunIntegrationTests }
         'run.all.integration.tests' { RunAllIntegrationTests }
         'run.all.unit.tests' { RunAllUnitTests }
