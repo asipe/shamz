@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using SupaCharge.Core.IOAbstractions;
+using SupaCharge.Core.ThreadingAbstractions;
 
 namespace Shamz.Core {
   public class ShamzExe : IShamzExe {
@@ -29,7 +30,16 @@ namespace Shamz.Core {
     }
 
     public void CleanUp() {
-      mFile.Delete(mExePath);
+      new Retry(100, 15)
+        .WithWork(x => DeleteExe())
+        .Start();
+    }
+
+    private void DeleteExe() {
+      if (mFile.Exists(mExePath))
+        mFile.Delete(mExePath);
+      if (mFile.Exists(mExePath))
+        throw new Exception("Executable Still Exists");
     }
 
     private void ValidateInvocations() {

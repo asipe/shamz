@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.IO;
 using NUnit.Framework;
 using Shamz.Core;
+using SupaCharge.Core.ThreadingAbstractions;
 using SupaCharge.Testing;
 
 namespace Shamz.IntegrationTests {
@@ -19,12 +20,16 @@ namespace Shamz.IntegrationTests {
                                .WhenCommandLine("a2", "b2", "c2")
                                .ThenReturn(1))
         .Initialize();
-      Measure(0, 500, () => ExecuteProcess("a1 b1 c1", 0));
-      Measure(0, 500, () => ExecuteProcess("a2 b2 c2", 1));
-      Measure(0, 500, () => ExecuteProcess("", 0));
-      Measure(0, 500, () => ExecuteProcess("a1b1c1", 0));
+
+      new WorkQueueBatch(BuildWorkQueue())
+        .Add(() => Measure(0, 500, () => ExecuteProcess("a1 b1 c1", 0)),
+             () => Measure(0, 500, () => ExecuteProcess("a2 b2 c2", 1)),
+             () => Measure(0, 500, () => ExecuteProcess("", 0)),
+             () => Measure(0, 500, () => ExecuteProcess("a1b1c1", 0)))
+        .Wait(100000);
+
       shamz.CleanUp();
-      Assert.That(File.Exists(mWorkingExePath), Is.False);
+      VerifyShamzExecutableRemoved();
     }
 
     [Test]
@@ -39,13 +44,15 @@ namespace Shamz.IntegrationTests {
                                .ThenReturn(1))
         .WithDefaultExitCode(100)
         .Initialize();
-      Measure(0, 500, () => ExecuteProcess("a1 b1 c1", 0));
-      Measure(0, 500, () => ExecuteProcess("a2 b2 c2", 1));
-      Measure(0, 500, () => ExecuteProcess("", 100));
-      Measure(0, 500, () => ExecuteProcess("a1b1c1", 100));
-      Measure(0, 500, () => ExecuteProcess(null, 100));
+      new WorkQueueBatch(BuildWorkQueue())
+        .Add(() => Measure(0, 500, () => ExecuteProcess("a1 b1 c1", 0)),
+             () => Measure(0, 500, () => ExecuteProcess("a2 b2 c2", 1)),
+             () => Measure(0, 500, () => ExecuteProcess("", 100)),
+             () => Measure(0, 500, () => ExecuteProcess("a1b1c1", 100)),
+             () => Measure(0, 500, () => ExecuteProcess(null, 100)))
+        .Wait(100000);
       shamz.CleanUp();
-      Assert.That(File.Exists(mWorkingExePath), Is.False);
+      VerifyShamzExecutableRemoved();
     }
 
     [Test]
@@ -59,11 +66,13 @@ namespace Shamz.IntegrationTests {
                                .WhenCommandLine(".+", ".+", ".+")
                                .ThenReturn(2000))
         .Initialize();
-      Measure(0, 500, () => ExecuteProcess("a1 b1 c1", 1000));
-      Measure(0, 500, () => ExecuteProcess("a2 b2 c2", 2000));
-      Measure(0, 500, () => ExecuteProcess("a2", 0));
+      new WorkQueueBatch(BuildWorkQueue())
+        .Add(() => Measure(0, 500, () => ExecuteProcess("a1 b1 c1", 1000)),
+             () => Measure(0, 500, () => ExecuteProcess("a2 b2 c2", 2000)),
+             () => Measure(0, 500, () => ExecuteProcess("a2", 0)))
+        .Wait(100000);
       shamz.CleanUp();
-      Assert.That(File.Exists(mWorkingExePath), Is.False);
+      VerifyShamzExecutableRemoved();
     }
 
     [Test]
@@ -82,17 +91,32 @@ namespace Shamz.IntegrationTests {
                                .Delay(1500)
                                .ThenReturn(3000))
         .Initialize();
-      Measure(1000, 1500, () => ExecuteProcess("arg1 arg2 arg3", 1000));
-      Measure(0, 500, () => ExecuteProcess("arg4 arg5 arg6", 2000));
-      Measure(1500, 2000, () => ExecuteProcess("arg7 arg8 arg9", 3000));
+      new WorkQueueBatch(BuildWorkQueue())
+        .Add(() => Measure(1000, 2500, () => ExecuteProcess("arg1 arg2 arg3", 1000)),
+             () => Measure(0, 2000, () => ExecuteProcess("arg4 arg5 arg6", 2000)),
+             () => Measure(1500, 3000, () => ExecuteProcess("arg7 arg8 arg9", 3000)))
+        .Wait(100000);
       shamz.CleanUp();
-      Assert.That(File.Exists(mWorkingExePath), Is.False);
+      VerifyShamzExecutableRemoved();
     }
 
     [SetUp]
     public void DoSetup() {
       mWorkingDir = CreateTempDir();
       mWorkingExePath = Path.Combine(mWorkingDir, "sample.exe");
+    }
+
+    [TearDown]
+    public void DoTearDown() {
+      Directory.Delete(TempDir, true);
+    }
+
+    private static IWorkQueue BuildWorkQueue() {
+      return new ThreadPoolWorkQueue();
+    }
+
+    private void VerifyShamzExecutableRemoved() {
+      Assert.That(File.Exists(mWorkingExePath), Is.False);
     }
 
     private void ExecuteProcess(string arguments, int expectedExitCode) {
@@ -109,11 +133,12 @@ namespace Shamz.IntegrationTests {
                                                                             UseShellExecute = false
                                                                           }
                                        }) {
-        process.Start();
-        process.WaitForExit();
+        Assert.That(process.Start(), Is.True);
         Assert.That(process.StandardError.ReadToEnd(), Is.Empty);
         Assert.That(process.StandardOutput.ReadToEnd(), Is.Empty);
+        process.WaitForExit(60000);
         Assert.That(process.ExitCode, Is.EqualTo(expectedExitCode));
+        process.Close();
       }
     }
 

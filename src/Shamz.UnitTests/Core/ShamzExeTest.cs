@@ -15,7 +15,7 @@ namespace Shamz.UnitTests.Core {
       mBuilder.Setup(b => b.Build(It.Is<StubSpec>(spec => SpecMatches(spec, _ExePath, 0))));
       mShamz.Initialize();
     }
-    
+
     [Test]
     public void TestInitializeWithInvalidInvocationThrows() {
       mShamz.Setup(inv => mExpectedInvocations.Add(inv));
@@ -74,8 +74,21 @@ namespace Shamz.UnitTests.Core {
 
     [Test]
     public void TestCleanUpRemovesExeFile() {
+      var exists = new Queue<bool>(BA(true, false));
+      mFile.Setup(f => f.Exists(_ExePath)).Returns(exists.Dequeue);
       mFile.Setup(f => f.Delete(_ExePath));
       mShamz.CleanUp();
+      Assert.That(exists, Is.Empty);
+    }
+
+    [Test]
+    public void TestCleanUpRemovesExeFileWithRetry() {
+      var exists = new Queue<bool>(BA(true, true, true, false));
+      mFile.Setup(f => f.Exists(_ExePath)).Returns(exists.Dequeue);
+      mFile.Setup(f => f.Delete(_ExePath));
+      mShamz.CleanUp();
+      Assert.That(exists, Is.Empty);
+      mFile.Verify(f => f.Delete(_ExePath), Times.Exactly(2));
     }
 
     [SetUp]
