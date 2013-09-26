@@ -2,14 +2,14 @@
 <package >
   <metadata>
     <id>Shamz</id>
-    <version>1.0.0.4</version>
+    <version>1.0.0.5</version>
     <authors>asipe</authors>
     <owners>asipe</owners>
     <licenseUrl>https://github.com/asipe/shamz/blob/master/LICENSE</licenseUrl>
     <projectUrl>https://github.com/asipe/Shamz</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>Shamz is a micro library for mocking command line executables.  Shamz allows you to dynamically create an executable which will match command line args and take some action (delay, return a specific exit code, etc..).  Useful for writing tests against an external executable.</description>
-    <releaseNotes>Updated merge so that only Shamz classes are surfaced from the assembly</releaseNotes>
+    <releaseNotes>Added support for default exit code, invocation arg matching mode (exact or regex) and some misc stability improvements.</releaseNotes>
     <copyright>Copyright 2013</copyright>
     <tags>mock,test,unittest,integrationtest,exe,executable</tags>
     <dependencies/>

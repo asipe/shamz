@@ -200,7 +200,7 @@ function PushNugetPackages() {
   if ($response -eq 'YES') {
     Write-Host -ForegroundColor Yellow 'Pushing'
 
-    thirdparty\nuget\nuget.exe push .\nugetworking\core\shamz.1.0.0.4.nupkg | Write-Host
+    thirdparty\nuget\nuget.exe push .\nugetworking\core\shamz.1.0.0.5.nupkg | Write-Host
     CheckLastExitCode
   } else {
     Write-Host -ForegroundColor Yellow 'Cancelled - Nothing Pushed'
