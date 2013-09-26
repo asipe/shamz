@@ -11,7 +11,11 @@
 namespace ShamzStub {
   public class Program {
     public static int Main(string[] args) {
-      return new Stub().Execute(args);
+      try {
+        return new Stub().Execute(args);
+      } catch {
+        return -999;
+      }
     }
   }
 }

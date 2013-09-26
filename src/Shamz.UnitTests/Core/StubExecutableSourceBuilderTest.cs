@@ -48,6 +48,14 @@ namespace Shamz.UnitTests.Core {
       Check(100, "a1", "b1", "c1");
     }
 
+    [Test]
+    public void TestWithInvocationWhichCausesARunTimeErrorReturnsNegative999() {
+      Compile(mBuilder.Build(new StubSpec("",
+                                          0,
+                                          new Invocation().WhenCommandLine("a1", "b1", "c[1").ThenReturn(100))));
+      Check(-999, "a1", "b1", "c1");
+    }
+
     [SetUp]
     public void DoSetup() {
       CreateTempDir();
