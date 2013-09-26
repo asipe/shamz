@@ -11,12 +11,29 @@ namespace Shamz.UnitTests.Core {
       Assert.That(mInvocation.CommandLine, Is.Null);
       Assert.That(mInvocation.ExitCode, Is.EqualTo(0));
       Assert.That(mInvocation.ExecutionDelay, Is.EqualTo(0));
+      Assert.That(mInvocation.MatchMode, Is.EqualTo(MatchMode.Regex));
     }
 
     [Test]
     public void TestSetCommandLine() {
       mInvocation.WhenCommandLine("a", "b", "c");
       Assert.That(mInvocation.CommandLine, Is.EqualTo(BA("a", "b", "c")));
+      Assert.That(mInvocation.MatchMode, Is.EqualTo(MatchMode.Regex));
+    }
+
+    [Test]
+    public void TestSetCommandLineWithoutMatchModeDoesNotChangeMatchMode() {
+      mInvocation.MatchMode = MatchMode.Exact;
+      mInvocation.WhenCommandLine("a", "b", "c");
+      Assert.That(mInvocation.CommandLine, Is.EqualTo(BA("a", "b", "c")));
+      Assert.That(mInvocation.MatchMode, Is.EqualTo(MatchMode.Exact));
+    }
+
+    [Test]
+    public void TestSetCommandLineWithMatchMode() {
+      mInvocation.WhenCommandLine(MatchMode.Exact, "a", "b", "c");
+      Assert.That(mInvocation.CommandLine, Is.EqualTo(BA("a", "b", "c")));
+      Assert.That(mInvocation.MatchMode, Is.EqualTo(MatchMode.Exact));
     }
 
     [Test]

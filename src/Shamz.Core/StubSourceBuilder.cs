@@ -10,8 +10,16 @@ namespace Shamz.Core {
     private static string BuildLogic(StubSpec spec) {
       var buf = new StringBuilder();
       foreach (var invocation in spec.Invocations)
-        buf.AppendFormat(_IsMatchCallTemplate, FormatCommandLine(invocation), invocation.ExecutionDelay, invocation.ExitCode);
+        buf.AppendFormat(_IsMatchCallTemplate,
+                         ForgeUseRegex(invocation),
+                         FormatCommandLine(invocation),
+                         invocation.ExecutionDelay,
+                         invocation.ExitCode);
       return buf.ToString();
+    }
+
+    private static string ForgeUseRegex(Invocation invocation) {
+      return invocation.MatchMode == MatchMode.Regex ? "true" : "false";
     }
 
     private static string FormatCommandLine(Invocation invocation) {
@@ -34,21 +42,21 @@ namespace ShamzStub {{
       return {1};
     }}
 
-    private static bool IsMatch(string[] args, string[] candidates) {{
+    private static bool IsMatch(string[] args, bool useRegex, string[] candidates) {{
       if (args.Length != candidates.Length)
         return false;
       
       return args
         .Select((a,x) => new {{Arg = a, Candidate = candidates[x]}})
-        .All(i => Regex.IsMatch(i.Arg, i.Candidate));
+        .All(i => useRegex ? Regex.IsMatch(i.Arg, i.Candidate) : i.Arg == i.Candidate);
     }}
   }}
 }}
 ";
     private const string _IsMatchCallTemplate = @"
-if (IsMatch(args, {0})) {{
-  Thread.Sleep({1});
-  return {2};
+if (IsMatch(args, {0}, {1})) {{
+  Thread.Sleep({2});
+  return {3};
 }}
 ";
     private const string _ArrayTemplate = "new [] {{ {0} }}";

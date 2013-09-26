@@ -24,6 +24,8 @@ namespace Shamz.IntegrationTests {
       new WorkQueueBatch(BuildWorkQueue())
         .Add(() => Measure(0, 750, () => ExecuteProcess("a1 b1 c1", 0)),
              () => Measure(0, 750, () => ExecuteProcess("a2 b2 c2", 1)),
+             () => Measure(0, 750, () => ExecuteProcess("a22 b22 c22", 1)),
+             () => Measure(0, 750, () => ExecuteProcess("a22a b22b c22c", 1)),
              () => Measure(0, 750, () => ExecuteProcess("", 0)),
              () => Measure(0, 750, () => ExecuteProcess("a1b1c1", 0)))
         .Wait(100000);
@@ -71,6 +73,32 @@ namespace Shamz.IntegrationTests {
              () => Measure(0, 500, () => ExecuteProcess("a2 b2 c2", 2000)),
              () => Measure(0, 500, () => ExecuteProcess("a2", 0)))
         .Wait(100000);
+      shamz.CleanUp();
+      VerifyShamzExecutableRemoved();
+    }
+
+    [Test]
+    public void TestExactMatchUsage() {
+      var shamz = ShamzFactory.CreateShamzExe(mWorkingExePath);
+      shamz
+        .WithDefaultExitCode(99)
+        .Setup(invocation => invocation
+                               .WhenCommandLine(MatchMode.Exact, "a1", "b1", "c1")
+                               .ThenReturn(10))
+        .Setup(invocation => invocation
+                               .WhenCommandLine(MatchMode.Exact, "a2", "b2", "c2")
+                               .ThenReturn(20))
+        .Initialize();
+
+      new WorkQueueBatch(BuildWorkQueue())
+        .Add(() => Measure(0, 750, () => ExecuteProcess("a1 b1 c1", 10)),
+             () => Measure(0, 750, () => ExecuteProcess("a2 b2 c2", 20)),
+             () => Measure(0, 750, () => ExecuteProcess("a22 b22 c22", 99)),
+             () => Measure(0, 750, () => ExecuteProcess("a22a b22b c22c", 99)),
+             () => Measure(0, 750, () => ExecuteProcess("", 99)),
+             () => Measure(0, 750, () => ExecuteProcess("a1b1c1", 99)))
+        .Wait(100000);
+
       shamz.CleanUp();
       VerifyShamzExecutableRemoved();
     }

@@ -5,8 +5,15 @@ namespace Shamz.Core {
     public string[] CommandLine{get;set;}
     public int ExitCode{get;set;}
     public int ExecutionDelay{get;set;}
+    public MatchMode MatchMode{get;set;}
 
     public Invocation WhenCommandLine(params string[] commandLine) {
+      CommandLine = commandLine;
+      return this;
+    }
+    
+    public Invocation WhenCommandLine(MatchMode matchMode, params string[] commandLine) {
+      MatchMode = matchMode;
       CommandLine = commandLine;
       return this;
     }

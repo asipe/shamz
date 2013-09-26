@@ -22,6 +22,13 @@ namespace Shamz.UnitTests.Core {
     }
 
     [Test]
+    public void TestWithSingleExactInvocationThatMatchesArgsReturnsInvocationsCode() {
+      var source = mBuilder.Build(new StubSpec("", 0, new Invocation().WhenCommandLine(MatchMode.Exact, "a", "b", "c").ThenReturn(100)));
+      var instance = CreateInstance(Compile(source));
+      Check(instance, 100, 0, 500, "a", "b", "c");
+    }
+
+    [Test]
     public void TestWithSingleInvocationThatDoesNotMatchArgsReturnsDefault() {
       var source = mBuilder.Build(new StubSpec("", 0, new Invocation().WhenCommandLine("a", "b", "c").ThenReturn(100)));
       var instance = CreateInstance(Compile(source));
@@ -32,10 +39,12 @@ namespace Shamz.UnitTests.Core {
     public void TestWithMultipleInvocations() {
       var source = mBuilder.Build(new StubSpec("",
                                                0,
+                                               new Invocation().WhenCommandLine(MatchMode.Exact, "a1[1", "b1[1", "c1[1").ThenReturn(50),
                                                new Invocation().WhenCommandLine("a1", "b1", "c1").ThenReturn(100),
                                                new Invocation().WhenCommandLine("a2", "c2").ThenReturn(200),
                                                new Invocation().WhenCommandLine("a3").ThenReturn(300)));
       var instance = CreateInstance(Compile(source));
+      Check(instance, 50, 0, 500, "a1[1", "b1[1", "c1[1");
       Check(instance, 100, 0, 500, "a1", "b1", "c1");
       Check(instance, 200, 0, 500, "a2", "c2");
       Check(instance, 300, 0, 500, "a3");
