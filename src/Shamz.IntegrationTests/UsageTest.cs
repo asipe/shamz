@@ -22,10 +22,10 @@ namespace Shamz.IntegrationTests {
         .Initialize();
 
       new WorkQueueBatch(BuildWorkQueue())
-        .Add(() => Measure(0, 500, () => ExecuteProcess("a1 b1 c1", 0)),
-             () => Measure(0, 500, () => ExecuteProcess("a2 b2 c2", 1)),
-             () => Measure(0, 500, () => ExecuteProcess("", 0)),
-             () => Measure(0, 500, () => ExecuteProcess("a1b1c1", 0)))
+        .Add(() => Measure(0, 750, () => ExecuteProcess("a1 b1 c1", 0)),
+             () => Measure(0, 750, () => ExecuteProcess("a2 b2 c2", 1)),
+             () => Measure(0, 750, () => ExecuteProcess("", 0)),
+             () => Measure(0, 750, () => ExecuteProcess("a1b1c1", 0)))
         .Wait(100000);
 
       shamz.CleanUp();
