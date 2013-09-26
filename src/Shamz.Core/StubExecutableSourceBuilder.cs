@@ -8,12 +8,15 @@
     }
 
     private const string _ProgramTemplate = @"
+using System;
+
 namespace ShamzStub {
   public class Program {
     public static int Main(string[] args) {
       try {
         return new Stub().Execute(args);
-      } catch {
+      } catch(Exception e) {
+        Console.Error.WriteLine(e);
         return -999;
       }
     }
